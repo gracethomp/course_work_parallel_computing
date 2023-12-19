@@ -13,6 +13,7 @@ public class InvertedIndex {
     }
 
     public void addDocument(int documentId, String content) {
+        content = content.replaceAll("[,.;:!?]", "");
         String[] words = content.split("\\s+");
 
         for (String word : words) {
@@ -40,7 +41,7 @@ public class InvertedIndex {
         invertedIndex.addDocument(2, "Python is also a programming language");
         invertedIndex.addDocument(3, "Java and Python are popular languages");
 
-        List<Integer> result = invertedIndex.search("is");
+        List<Integer> result = invertedIndex.search("java");
 
         System.out.println("Documents containing the word 'java': " + result);
     }
