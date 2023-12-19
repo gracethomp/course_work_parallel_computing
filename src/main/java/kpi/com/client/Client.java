@@ -22,7 +22,9 @@ public class Client {
             System.out.println(dataInputStream.readUTF());
             Scanner sc = new Scanner(System.in);
             String word = sc.nextLine();
-            dataOutputStream.writeUTF(word);
+            sendWord(dataOutputStream, word);
+            sc.close();
+            System.out.println(dataInputStream.readUTF());
             dataInputStream.close();
             dataOutputStream.close();
         } catch (IOException e) {
