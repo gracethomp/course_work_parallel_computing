@@ -12,7 +12,6 @@ public class InvertedIndex {
         this.index = new HashMap<>();
     }
 
-    // Добавить документ в индекс
     public void addDocument(int documentId, String content) {
         String[] words = content.split("\\s+");
 
@@ -29,7 +28,6 @@ public class InvertedIndex {
         }
     }
 
-    // Поиск документов по слову
     public List<Integer> search(String query) {
         query = query.toLowerCase();
         return index.getOrDefault(query, new ArrayList<>());
@@ -38,15 +36,12 @@ public class InvertedIndex {
     public static void main(String[] args) {
         InvertedIndex invertedIndex = new InvertedIndex();
 
-        // Добавление документов в индекс
         invertedIndex.addDocument(1, "Java is a programming language");
         invertedIndex.addDocument(2, "Python is also a programming language");
         invertedIndex.addDocument(3, "Java and Python are popular languages");
 
-        // Поиск документов по слову
         List<Integer> result = invertedIndex.search("is");
 
-        // Вывод результатов
         System.out.println("Documents containing the word 'java': " + result);
     }
 }
