@@ -6,16 +6,25 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-public class IndexBuilder extends Thread{
+public class IndexBuilder extends Thread {
     private static final String[] folders = {"src/main/resources/test.neg",
             "src/main/resources/test.pos", "src/main/resources/train/neg", "src/main/resources/train.pos",
             "src/main/resources/train.unsup"};
     private final Map<String, Set<String>> index;
     private final File[] files;
+    private int startIndex;
+    private int endIndex;
 
     public IndexBuilder(File[] files) {
         this.index = new HashMap<>();
         this.files = files;
+    }
+
+    public IndexBuilder(File[] files, int startIndex, int endIndex) {
+        this.index = new HashMap<>();
+        this.files = files;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
     }
 
     public static File[] readFiles(String folderPath) {
@@ -25,7 +34,6 @@ public class IndexBuilder extends Thread{
             System.err.println("Invalid folder path: " + folderPath);
             return null;
         }
-
         return folder.listFiles();
     }
 
@@ -39,11 +47,21 @@ public class IndexBuilder extends Thread{
         }
     }
 
+    public void buildIndex(int startIndex, int endIndex) throws IOException {
+        if (files != null) {
+            for (int i = startIndex; i < endIndex; i++){
+                if (files[i].isFile()) {
+                    indexFile(files[i]);
+                }
+            }
+        }
+    }
+
     private void indexFile(File file) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] words = line.split("\\s+");
+                String[] words = line.split("[^a-zA-Z0-9']+");
                 for (String word : words) {
                     word = word.toLowerCase();
                     index.computeIfAbsent(word, k -> new HashSet<>()).add(file.getName());
@@ -83,7 +101,7 @@ public class IndexBuilder extends Thread{
     @Override
     public void run() {
         try {
-            this.buildIndex();
+            this.buildIndex(startIndex, endIndex);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
