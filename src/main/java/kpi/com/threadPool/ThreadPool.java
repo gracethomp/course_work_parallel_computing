@@ -22,6 +22,17 @@ public class ThreadPool {
         }
     }
 
+    public static void main(String[] args) {
+        ThreadPool threadPool = new ThreadPool(5);
+
+        for (int i = 0; i < 1000; i++) {
+            final int taskNumber = i;
+            threadPool.submit(() -> {
+                System.out.println("Task " + taskNumber + " executed by thread " + Thread.currentThread().getName());
+            });
+        }
+    }
+
     private class WorkerThread extends Thread {
         @Override
         public void run() {
@@ -46,19 +57,6 @@ public class ThreadPool {
                     throw new RuntimeException(e);
                 }
             }
-        }
-    }
-}
-
-class Main {
-    public static void main(String[] args) {
-        ThreadPool threadPool = new ThreadPool(5);
-
-        for (int i = 0; i < 1000; i++) {
-            final int taskNumber = i;
-            threadPool.submit(() -> {
-                System.out.println("Task " + taskNumber + " executed by thread " + Thread.currentThread().getName());
-            });
         }
     }
 }
