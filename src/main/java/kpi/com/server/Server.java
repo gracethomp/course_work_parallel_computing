@@ -26,7 +26,6 @@ public class Server {
             try {
                 ClientHandler clientHandler = new ClientHandler(serverSocket.accept());
                 System.out.println("A new client is connected...");
-//                clientHandler.start();
                 threadPool.execute(clientHandler);
             } catch (IOException e) {
                 throw new RuntimeException(e);
