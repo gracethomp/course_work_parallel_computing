@@ -9,8 +9,8 @@ import java.util.*;
 public class IndexBuilder extends Thread {
     private final Map<String, Set<String>> index;
     private final File[] files;
-    private int startIndex;
-    private int endIndex;
+    private final int startIndex;
+    private final int endIndex;
 
     public IndexBuilder(File[] files, int startIndex, int endIndex) {
         this.index = new HashMap<>();

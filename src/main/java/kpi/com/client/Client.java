@@ -25,13 +25,12 @@ public class Client {
             Scanner sc = new Scanner(System.in);
 
             while(continueConfirmation) {
-                System.out.println(dataInputStream.readUTF());
+                getData(dataInputStream);
                 String word = sc.nextLine();
                 sendData(dataOutputStream, word);
-                System.out.println(dataInputStream.readUTF());
-                int numberOfThreads = Integer.parseInt(sc.nextLine());
-                dataOutputStream.writeInt(numberOfThreads);
-                System.out.println(dataInputStream.readUTF());
+                getData(dataInputStream);
+                setThreads(sc, dataOutputStream);
+                getData(dataInputStream);
                 word = sc.nextLine();
                 sendData(dataOutputStream, word);
                 continueConfirmation = Objects.equals(word, "y");
@@ -44,8 +43,17 @@ public class Client {
         }
     }
 
+    private void setThreads(Scanner sc, DataOutputStream dataOutputStream) throws IOException {
+        int numberOfThreads = Integer.parseInt(sc.nextLine());
+        dataOutputStream.writeInt(numberOfThreads);
+    }
+
     private void sendData(DataOutputStream outputStream, String word) throws IOException {
         outputStream.writeUTF(word);
+    }
+
+    private void getData(DataInputStream dataInputStream) throws IOException {
+        System.out.println(dataInputStream.readUTF());
     }
 
     public static void main(String[] args) throws InterruptedException {

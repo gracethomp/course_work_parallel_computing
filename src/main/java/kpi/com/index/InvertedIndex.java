@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.*;
 
 public class InvertedIndex {
-    public static final int NUMBER_OF_THREADS = 10;
     private final Map<String, Set<String>> index;
     private final List<File> files = new ArrayList<>();
 

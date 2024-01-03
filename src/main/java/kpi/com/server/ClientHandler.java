@@ -57,15 +57,15 @@ public class ClientHandler extends Thread {
                 System.out.println(numberOfThreads);
 
                 InvertedIndex parallelInvertedIndex = new InvertedIndex(readAllFiles());
-                IndexBuilder[] indexBuilder = new IndexBuilder[InvertedIndex.NUMBER_OF_THREADS];
+                IndexBuilder[] indexBuilder = new IndexBuilder[numberOfThreads];
                 long currentTime = System.nanoTime();
-                int numRowsPerThread = parallelInvertedIndex.getFiles().size() / InvertedIndex.NUMBER_OF_THREADS;
-                for (int i = 0; i < InvertedIndex.NUMBER_OF_THREADS; i++) {
+                int numRowsPerThread = parallelInvertedIndex.getFiles().size() / numberOfThreads;
+                for (int i = 0; i < numberOfThreads; i++) {
                     indexBuilder[i] = new IndexBuilder(parallelInvertedIndex.getFiles().toArray(new File[0]), i * numRowsPerThread,
-                            (i == InvertedIndex.NUMBER_OF_THREADS - 1) ? parallelInvertedIndex.getFiles().size() : (i + 1) * numRowsPerThread);
+                            (i == numberOfThreads - 1) ? parallelInvertedIndex.getFiles().size() : (i + 1) * numRowsPerThread);
                     indexBuilder[i].start();
                 }
-                for (int i = 0; i < InvertedIndex.NUMBER_OF_THREADS; i++) {
+                for (int i = 0; i < numberOfThreads; i++) {
                     indexBuilder[i].join();
 
                     Map<String, Set<String>> threadIndex = indexBuilder[i].getIndex();
