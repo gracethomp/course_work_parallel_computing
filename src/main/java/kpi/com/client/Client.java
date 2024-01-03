@@ -44,5 +44,10 @@ public class Client {
     private void sendWord(DataOutputStream outputStream, String word) throws IOException {
         outputStream.writeUTF(word);
     }
+
+    public static void main(String[] args) throws InterruptedException {
+        Client client = new Client("localhost", 6666);
+        client.connect();
+    }
 }
 
