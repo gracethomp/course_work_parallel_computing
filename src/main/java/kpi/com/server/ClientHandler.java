@@ -1,7 +1,7 @@
 package kpi.com.server;
 
 import kpi.com.index.IndexBuilder;
-import kpi.com.index.ParallelInvertedIndex;
+import kpi.com.index.InvertedIndex;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -52,15 +52,20 @@ public class ClientHandler extends Thread {
                 String word = inputStream.readUTF();
                 System.out.println(word);
 
-                ParallelInvertedIndex parallelInvertedIndex = new ParallelInvertedIndex(readAllFiles());
-                IndexBuilder[] indexBuilder = new IndexBuilder[ParallelInvertedIndex.NUMBER_OF_THREADS];
-                int numRowsPerThread = parallelInvertedIndex.getFiles().size() / ParallelInvertedIndex.NUMBER_OF_THREADS;
-                for (int i = 0; i < ParallelInvertedIndex.NUMBER_OF_THREADS; i++) {
+                outputStream.writeUTF("Please send number of threads you want to use");
+                int numberOfThreads = inputStream.readInt();
+                System.out.println(numberOfThreads);
+
+                InvertedIndex parallelInvertedIndex = new InvertedIndex(readAllFiles());
+                IndexBuilder[] indexBuilder = new IndexBuilder[InvertedIndex.NUMBER_OF_THREADS];
+                long currentTime = System.nanoTime();
+                int numRowsPerThread = parallelInvertedIndex.getFiles().size() / InvertedIndex.NUMBER_OF_THREADS;
+                for (int i = 0; i < InvertedIndex.NUMBER_OF_THREADS; i++) {
                     indexBuilder[i] = new IndexBuilder(parallelInvertedIndex.getFiles().toArray(new File[0]), i * numRowsPerThread,
-                            (i == ParallelInvertedIndex.NUMBER_OF_THREADS - 1) ? parallelInvertedIndex.getFiles().size() : (i + 1) * numRowsPerThread);
+                            (i == InvertedIndex.NUMBER_OF_THREADS - 1) ? parallelInvertedIndex.getFiles().size() : (i + 1) * numRowsPerThread);
                     indexBuilder[i].start();
                 }
-                for (int i = 0; i < ParallelInvertedIndex.NUMBER_OF_THREADS; i++) {
+                for (int i = 0; i < InvertedIndex.NUMBER_OF_THREADS; i++) {
                     indexBuilder[i].join();
 
                     Map<String, Set<String>> threadIndex = indexBuilder[i].getIndex();
@@ -73,9 +78,10 @@ public class ClientHandler extends Thread {
                         });
                     }
                 }
+                long time = System.nanoTime() - currentTime;
                 Set<String> result = parallelInvertedIndex.search(word);
 
-                outputStream.writeUTF(result.toString() + ". Did you want to continue? (y/n)");
+                outputStream.writeUTF(result.toString() + ".\n Time for indexing:" + time + " Did you want to continue? (y/n)");
                 continueConfirmation = Objects.equals(inputStream.readUTF(), "y");
             }
 

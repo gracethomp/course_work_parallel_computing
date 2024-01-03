@@ -27,10 +27,13 @@ public class Client {
             while(continueConfirmation) {
                 System.out.println(dataInputStream.readUTF());
                 String word = sc.nextLine();
-                sendWord(dataOutputStream, word);
+                sendData(dataOutputStream, word);
+                System.out.println(dataInputStream.readUTF());
+                int numberOfThreads = Integer.parseInt(sc.nextLine());
+                dataOutputStream.writeInt(numberOfThreads);
                 System.out.println(dataInputStream.readUTF());
                 word = sc.nextLine();
-                sendWord(dataOutputStream, word);
+                sendData(dataOutputStream, word);
                 continueConfirmation = Objects.equals(word, "y");
             }
             sc.close();
@@ -41,7 +44,7 @@ public class Client {
         }
     }
 
-    private void sendWord(DataOutputStream outputStream, String word) throws IOException {
+    private void sendData(DataOutputStream outputStream, String word) throws IOException {
         outputStream.writeUTF(word);
     }
 
