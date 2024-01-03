@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Client {
@@ -19,12 +20,20 @@ public class Client {
         try (Socket socket = new Socket(HOST, PORT)) {
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            System.out.println(dataInputStream.readUTF());
+
+            boolean continueConfirmation = true;
             Scanner sc = new Scanner(System.in);
-            String word = sc.nextLine();
-            sendWord(dataOutputStream, word);
+
+            while(continueConfirmation) {
+                System.out.println(dataInputStream.readUTF());
+                String word = sc.nextLine();
+                sendWord(dataOutputStream, word);
+                System.out.println(dataInputStream.readUTF());
+                word = sc.nextLine();
+                sendWord(dataOutputStream, word);
+                continueConfirmation = Objects.equals(word, "y");
+            }
             sc.close();
-            System.out.println(dataInputStream.readUTF());
             dataInputStream.close();
             dataOutputStream.close();
         } catch (IOException e) {
