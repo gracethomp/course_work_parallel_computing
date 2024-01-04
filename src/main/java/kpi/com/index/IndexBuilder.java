@@ -1,5 +1,7 @@
 package kpi.com.index;
 
+import kpi.com.server.ClientHandler;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -45,6 +47,17 @@ public class IndexBuilder extends Thread {
 
     public Map<String, Set<String>> getIndex() {
         return index;
+    }
+
+    private Set<String> search(String word) {
+        return index.getOrDefault(word.toLowerCase(), new HashSet<>());
+    }
+
+    public static void main(String[] args) throws IOException {
+        File[] files = ClientHandler.readAllFiles().toArray(new File[0]);
+        IndexBuilder invertedIndex = new IndexBuilder(files, 0, 2005);
+        invertedIndex.buildIndex(0, 2005);
+        System.out.println(invertedIndex.search("word"));
     }
 
     @Override
