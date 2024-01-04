@@ -27,9 +27,8 @@ public class ThreadPool {
 
         for (int i = 0; i < 1000; i++) {
             final int taskNumber = i;
-            threadPool.submit(() -> {
-                System.out.println("Task " + taskNumber + " executed by thread " + Thread.currentThread().getName());
-            });
+            threadPool.submit(() -> System.out.println("Task " + taskNumber + " executed by thread " +
+                    Thread.currentThread().getName()));
         }
     }
 
