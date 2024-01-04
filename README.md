@@ -5,4 +5,4 @@
 git clone https://github.com/gracethomp/course_work_parallel_computing
 ```
 3. Відкрити проект у IDE.
-4. Запустити Server.java для запуску серверу.
+4. Запустити метод main в класі Server для запуску серверу.
